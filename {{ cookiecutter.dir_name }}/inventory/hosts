@@ -1,0 +1,4 @@
+# Inventories for deployment
+
+[vagrant]
+{{ cookiecutter.vagrant_vm_name }} ansible_host={{ cookiecutter.vagrant_ip }} ansible_python_interpreter={{ cookiecutter.ansible_python_interpreter }}

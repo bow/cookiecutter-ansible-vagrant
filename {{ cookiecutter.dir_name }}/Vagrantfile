@@ -1,0 +1,66 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API version
+VAGRANTFILE_API = 2
+
+# Set global VM name.
+VM_NAME = ENV["VM_NAME"] || "{{ cookiecutter.vagrant_vm_name }}"
+
+# Environment-variable controlled config values with some defaults
+IP = "{{ cookiecutter.vagrant_ip }}"
+MEM = ENV["STOCK_MEM"] || "{{ cookiecutter.vagrant_mem }}"
+CPU = ENV["STOCK_CPU"] || "{{ cookiecutter.vagrant_cpu }}"
+PORT_FORWARD_SSH = ENV["STOCK_PORT_SSH"] || "6822"
+PORT_FORWARD_HTTP = ENV["STOCK_PORT_HTTP"] || "6880"
+PORT_FORWARD_HTTPS = ENV["STOCK_PORT_HTTPS"] || "6443"
+
+# All Vagrant configuration is done below.
+Vagrant.configure(VAGRANTFILE_API) do |config|
+  config.vm.box = "{{ cookiecutter.vagrant_box }}"
+  config.vm.box_version = "{{ cookiecutter.vagrant_box_version }}"
+  config.vm.hostname = VM_NAME
+
+  # Disable shared folder.
+  config.vm.synced_folder ".", "/vagrant", :disabled => true
+
+  # Disable automatic keypair insertion.
+  config.ssh.insert_key = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine.
+  # The default SSH port forwarding to host port 2222 is also disabled.
+  config.vm.network "forwarded_port", guest: 22, host: PORT_FORWARD_SSH.to_i, auto_correct: false, id: "ssh"
+  config.vm.network "forwarded_port", guest: 80, host: PORT_FORWARD_HTTP.to_i
+  config.vm.network "forwarded_port", guest: 443, host: PORT_FORWARD_HTTPS.to_i
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  config.vm.network "private_network", ip: IP
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  config.vm.provider "virtualbox" do |vb|
+    # Hide VirtualBox GUI.
+    vb.gui = false
+    # Set name in VirtualBox.
+    vb.name = VM_NAME
+    # Apply resource customizations.
+    vb.customize ["modifyvm", :id, "--memory", MEM.to_i]
+    vb.customize ["modifyvm", :id, "--cpus", CPU.to_i]
+  end
+
+  # Set name for Vagrant.
+  config.vm.define VM_NAME do |t|
+  end
+
+  # Provision using Ansbile.
+  config.vm.provision "ansible" do |ansible|
+    ansible.inventory_path = "inventory/hosts"
+    ansible.playbook = "playbooks/deploy_vagrant.yml"
+    ansible.compatibility_mode = "2.0"
+  end
+end

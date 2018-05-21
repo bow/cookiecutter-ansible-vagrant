@@ -1,0 +1,17 @@
+---
+
+# Ansible playbook for deploying to a vagrant instance.
+# This is meant to be invoked via a Vagrantfile.
+
+- name: deploy to vagrant
+  hosts: vagrant
+  gather_facts: yes
+  become: yes
+
+  tasks:
+    - name: echo
+      command: "echo -e 'hello!'"
+      register: hello
+      changed_when: false
+
+    - debug: msg="{{ '{{' }} hello.stdout {{ '}}' }}"

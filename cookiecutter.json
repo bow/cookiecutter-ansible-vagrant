@@ -1,0 +1,10 @@
+{
+  "vagrant_box": "ubuntu/bionic64",
+  "vagrant_box_version": "20180518.0.0",
+  "vagrant_vm_name": "{{ cookiecutter.vagrant_box.split('/')[-1] }}-vagrant",
+  "dir_name": "{{ cookiecutter.vagrant_box.split('/')[-1] }}-deploy",
+  "vagrant_ip": "192.168.68.68",
+  "vagrant_mem": 1024,
+  "vagrant_cpu": 2,
+  "ansible_python_interpreter": "/usr/bin/python3"
+}
