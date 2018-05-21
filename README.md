@@ -20,3 +20,7 @@ Read more about using [Cookiecutter](https://cookiecutter.readthedocs.io/en/late
 particular was written using Cookiecutter v1.5.1 on Python 3.6.
 
 Other versions of Cookiecutter and/or Python may work, but they have not been explicitly tested.
+
+After instantiating the template, you can start using Vagrant to spawn the VM and provision it:
+
+  $ vagrant up
